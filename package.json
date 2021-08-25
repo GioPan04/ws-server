@@ -1,0 +1,33 @@
+{
+  "name": "@ws-chat/server",
+  "version": "1.0.0",
+  "description": "A WebSocket framework to implement a chat, like messagging apps",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ws-chat/server.git"
+  },
+  "keywords": [
+    "framework",
+    "websocket",
+    "ws"
+  ],
+  "author": "Gioele Pannetto (GioPan04)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ws-chat/server/issues"
+  },
+  "homepage": "https://github.com/ws-chat/server#readme",
+  "devDependencies": {
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "@types/ws": "^7.4.7",
+    "ws": "^8.2.0"
+  }
+}
