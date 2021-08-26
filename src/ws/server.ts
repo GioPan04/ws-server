@@ -1,5 +1,7 @@
-import WebSocket, { Server } from 'ws';
+import WebSocket from 'ws';
 import EventEmitter from 'events';
+import http from 'http';
+import AuthenticableWsServer, { AuthMiddlewareFunc } from './AuthenticableWsServer';
 
 interface ChatServerEvents<U> {
   'connection': (user: U) => void;
@@ -14,22 +16,21 @@ export declare interface ChatServer<U> {
 
 export class ChatServer<U> extends EventEmitter {
 
-  private server: Server;
+  private wss: AuthenticableWsServer<U>;
   readonly users: U[] = [];
 
-  authMiddleware: (data: any) => U;
+  authMiddleware: AuthMiddlewareFunc<U>;
   
   constructor({ authMiddleware }: IChatServer<U>) {
     super();
 
     this.authMiddleware = authMiddleware;
 
-    this.server = new Server({ port: 8080 });
-    this.server.on('connection', this.onConnection);
+    this.wss = new AuthenticableWsServer({ port: 8080 }, authMiddleware);
+    this.wss.on('connection', this.onConnection);
   }
 
-  private onConnection(ws: WebSocket) {
-    const user = this.authMiddleware(ws);
+  private onConnection(ws: WebSocket, req: http.IncomingMessage, user: U) {
     this.users.push(user);
     this.emit('connection', user);
     ws.on('message', (data) => this.onMessage(data, user));
@@ -49,6 +50,6 @@ export class ChatServer<U> extends EventEmitter {
 }
 
 interface IChatServer<U> {
-  authMiddleware: (data: any) => U;
+  authMiddleware: AuthMiddlewareFunc<U>;
 }
 
