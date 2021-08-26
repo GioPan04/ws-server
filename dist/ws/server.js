@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChatServer = void 0;
 const events_1 = __importDefault(require("events"));
 const AuthenticableWsServer_1 = __importDefault(require("./AuthenticableWsServer"));
+const messageParser_1 = __importDefault(require("../utils/messageParser"));
 class ChatServer extends events_1.default {
     constructor(authMiddleware) {
         super();
@@ -20,7 +21,12 @@ class ChatServer extends events_1.default {
         ws.on('close', () => this.logout(user));
     }
     onMessage(data, user) {
-        this.emit('message', data.toString(), user);
+        const event = messageParser_1.default(data.toString());
+        switch (event.eventName) {
+            case 'message':
+                this.emit('message', event.payload, user);
+                break;
+        }
     }
     logout(user) {
         const i = this.users.indexOf(user);

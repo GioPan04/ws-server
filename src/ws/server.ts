@@ -2,10 +2,12 @@ import WebSocket from 'ws';
 import EventEmitter from 'events';
 import http from 'http';
 import AuthenticableWsServer, { AuthMiddlewareFunc } from './AuthenticableWsServer';
+import { IMessage } from '../models/IData';
+import messageParser from '../utils/messageParser';
 
 interface ChatServerEvents<U> {
   'connection': (user: U) => void;
-  'message': (message: string, user: U) => void;
+  'message': (message: IMessage, user: U) => void;
   'logout': (user: U) => void;
 }
 
@@ -34,7 +36,13 @@ export class ChatServer<U> extends EventEmitter {
   }
 
   private onMessage(data: WebSocket.Data, user: U) {
-    this.emit('message', data.toString(), user);
+    const event = messageParser(data.toString());
+    switch (event.eventName) {
+      case 'message':
+        this.emit('message', event.payload, user);
+        break;
+    }
+
   }
 
   private logout(user: U) {

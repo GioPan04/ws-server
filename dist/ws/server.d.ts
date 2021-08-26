@@ -1,9 +1,10 @@
 /// <reference types="node" />
 import EventEmitter from 'events';
 import { AuthMiddlewareFunc } from './AuthenticableWsServer';
+import { IMessage } from '../models/IData';
 interface ChatServerEvents<U> {
     'connection': (user: U) => void;
-    'message': (message: string, user: U) => void;
+    'message': (message: IMessage, user: U) => void;
     'logout': (user: U) => void;
 }
 export declare interface ChatServer<U> {
