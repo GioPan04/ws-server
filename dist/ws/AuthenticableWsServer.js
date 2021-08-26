@@ -13,19 +13,19 @@ class AuthenticableWsServer extends ws_1.Server {
         super(Object.assign(Object.assign({}, options), { port: undefined, noServer: true }));
         this.middleware = authMiddleware;
         this.httpServer = http_1.default.createServer();
-        this.httpServer.on('upgrade', this.onUpgrade);
+        this.httpServer.on('upgrade', this.onUpgrade.bind(this));
         this.httpServer.listen(options.port);
     }
     onUpgrade(req, socket, head) {
         // TODO: Check if authorization token not exists
-        const user = this.middleware(req.headers['Authorization'][0]);
+        const user = this.middleware(req.headers['authorization'][0]);
         if (!user) {
             socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
             socket.destroy();
             return;
         }
         this.handleUpgrade(req, socket, head, (ws) => {
-            ws.emit('connection', ws, req, user);
+            this.emit('connection', ws, req, user);
         });
     }
 }

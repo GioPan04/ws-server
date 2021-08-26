@@ -7,12 +7,11 @@ exports.ChatServer = void 0;
 const events_1 = __importDefault(require("events"));
 const AuthenticableWsServer_1 = __importDefault(require("./AuthenticableWsServer"));
 class ChatServer extends events_1.default {
-    constructor({ authMiddleware }) {
+    constructor(authMiddleware) {
         super();
         this.users = [];
-        this.authMiddleware = authMiddleware;
         this.wss = new AuthenticableWsServer_1.default({ port: 8080 }, authMiddleware);
-        this.wss.on('connection', this.onConnection);
+        this.wss.on('connection', this.onConnection.bind(this));
     }
     onConnection(ws, req, user) {
         this.users.push(user);

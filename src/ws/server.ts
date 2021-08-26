@@ -18,16 +18,12 @@ export class ChatServer<U> extends EventEmitter {
 
   private wss: AuthenticableWsServer<U>;
   readonly users: U[] = [];
-
-  authMiddleware: AuthMiddlewareFunc<U>;
   
-  constructor({ authMiddleware }: IChatServer<U>) {
+  constructor(authMiddleware: AuthMiddlewareFunc<U>) {
     super();
 
-    this.authMiddleware = authMiddleware;
-
     this.wss = new AuthenticableWsServer({ port: 8080 }, authMiddleware);
-    this.wss.on('connection', this.onConnection);
+    this.wss.on('connection', this.onConnection.bind(this));
   }
 
   private onConnection(ws: WebSocket, req: http.IncomingMessage, user: U) {
@@ -47,9 +43,5 @@ export class ChatServer<U> extends EventEmitter {
     this.users.splice(i, 1);
     this.emit('logout', user);
   }
-}
-
-interface IChatServer<U> {
-  authMiddleware: AuthMiddlewareFunc<U>;
 }
 

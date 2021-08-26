@@ -13,13 +13,9 @@ export declare interface ChatServer<U> {
 export declare class ChatServer<U> extends EventEmitter {
     private wss;
     readonly users: U[];
-    authMiddleware: AuthMiddlewareFunc<U>;
-    constructor({ authMiddleware }: IChatServer<U>);
+    constructor(authMiddleware: AuthMiddlewareFunc<U>);
     private onConnection;
     private onMessage;
     private logout;
-}
-interface IChatServer<U> {
-    authMiddleware: AuthMiddlewareFunc<U>;
 }
 export {};

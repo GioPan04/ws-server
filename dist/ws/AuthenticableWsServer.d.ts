@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import WebSocket, { Server } from 'ws';
 import http from 'http';
-export declare type AuthMiddlewareFunc<U> = (token: string) => U | undefined;
+export declare type AuthMiddlewareFunc<U> = (token: string) => (U | undefined);
 /**
  * A WebSocket server with a custom connection upgrade handler
  */
